@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import './App.scss'
 import { UsernameInput } from './components/UsernameInput/UsernameInput';
 import { socket } from '../socket.io';
-import ContentEditable from 'react-contenteditable';
 import { MdBlock } from "react-icons/md";
 import { AudioPlayer } from './AudioPlayer';
+import { TextBox } from './components/TextBox/TextBox';
 
 export function App() {
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
@@ -93,17 +93,13 @@ export function App() {
             />
           )
         }
-        <ContentEditable
-          disabled={!started}
-          className='textbox'
-          html={text}
-          onChange={(e) => {
-            setText(e.target.value)
-            socket.emit('text', e.target.value)
+        <TextBox
+          disable={!started}
+          text={text}
+          onTextChange={(text) => {
+            setText(text);
+            socket.emit('text', text);
           }}
-          onCopy={(e) => e.preventDefault()}
-          onPaste={(e) => e.preventDefault()}
-          onCut={(e) => e.preventDefault()}
         />
       </div>
     </div>

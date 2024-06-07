@@ -1,0 +1,13 @@
+.textbox {
+	text-align: left;
+	height: 100%;
+	width: 100%;
+	outline: 0;
+	background-color: var(--background-color);
+	border-radius: 5px;
+	padding: 20px;
+
+	&:disabled {
+		background-color: red;
+	}
+}
