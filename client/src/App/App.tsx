@@ -5,12 +5,13 @@ import { socket } from '../socket.io';
 import { MdBlock } from "react-icons/md";
 import { AudioPlayer } from './AudioPlayer';
 import { TextBox } from './components/TextBox/TextBox';
+import { Timer } from './components/Timer/Timer';
 
 export function App() {
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
-  const [timer, setTimer] = useState(0);
   const [text, setText] = useState('');
   const [started, setStarted] = useState(false);
+  const [timer, setTimer] = useState(0);
 
   useEffect(() => {
     socket.emit('username', username, (time: number) => {
@@ -58,16 +59,6 @@ export function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (started) {
-      const interval = setInterval(() => {
-        setTimer((timer) => timer + 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [started]);
-
-
   if (!username) {
     return (
       <UsernameInput
@@ -82,7 +73,10 @@ export function App() {
     <div className="app">
       <AudioPlayer />
       <div className="timer">
-        {new Date(timer * 1000).toISOString().substr(11, 8)}
+        <Timer
+          paused={!started}
+          defaultTimer={timer}
+        />
       </div>
       <div className="box">
         {
