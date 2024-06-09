@@ -6,6 +6,7 @@ import { Timer } from '../components/Timer/Timer';
 import { GameState } from '../App/App';
 import { AudioPlayer } from '../App/AudioPlayer';
 import classNames from 'classnames';
+import { Button } from '../components/Button/Button';
 
 interface Client {
   name: string;
@@ -38,12 +39,14 @@ export function AdminApp() {
   });
 
   return (
-    <>
-      <div className="controls">
-        <button onClick={() => socket.emit(started ? 'pause' : 'start')}>{started ? 'Pause' : 'Start'}</button>
-        <button onClick={() => socket.emit('verify')}>Verify</button>
+    <div className="admin-app">
+      <div className="header">
+        <div className="controls">
+          <Button className='button' onClick={() => socket.emit(started ? 'pause' : 'start')}>{started ? 'Pause' : 'Start'}</Button>
+          <Button className='button' onClick={() => socket.emit('verify')}>Verify</Button>
+        </div>
+        <h1 className='time'><Timer paused={!started} defaultTimer={timer} /></h1>
       </div>
-      <h1 className='time'><Timer paused={!started} defaultTimer={timer} /></h1>
       <AudioPlayer />
       <div className="clients">
         {
@@ -61,6 +64,6 @@ export function AdminApp() {
           })
         }
       </div>
-    </>
+    </div>
   )
 }

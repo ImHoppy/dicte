@@ -1,17 +1,60 @@
-.clients {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 100px;
-  margin: 50px;
+.admin-app {
   height: 100%;
-  overflow-y: auto;
+  padding: 25px;
 
-  .client {
-    border-radius: 5px;
-    border: 1px solid var(--background-color);
-    height: 250px;
-    &:not(.focus) {
-      border: 1px solid #f00;
+  .header {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    .controls {
+      height: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      .button {
+        min-width: 100px;
+        max-width: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .time {
+      height: 50%;
+    }
+  }
+  .clients {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    gap: 20px;
+    height: 90%;
+    overflow-y: auto;
+
+    .client {
+      border-radius: 5px;
+      height: 350px;
+      width: 400px;
+
+      background: rgb(31, 41, 31);
+
+      display: flex;
+      flex-direction: column;
+
+      h1 {
+        padding: 5px 0;
+      }
+
+      &:not(.focus) {
+        background: rgba(78, 17, 17, 0.5);
+      }
     }
   }
 }

@@ -15,7 +15,7 @@ const gameState = {
 };
 
 class Client {
-	public isFocused = false;
+	public isFocused = true;
 	public text = '';
 	public username: string = '';
 
