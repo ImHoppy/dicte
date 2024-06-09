@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import './App.scss'
-import { UsernameInput } from './components/UsernameInput/UsernameInput';
+import { UsernameInput } from '../components/UsernameInput/UsernameInput';
 import { socket } from '../socket.io';
 import { MdBlock } from "react-icons/md";
 import { AudioPlayer } from './AudioPlayer';
-import { TextBox } from './components/TextBox/TextBox';
-import { Timer } from './components/Timer/Timer';
+import { TextBox } from '../components/TextBox/TextBox';
+import { Timer } from '../components/Timer/Timer';
 
 export function App() {
   const [username, setUsername] = useState(localStorage.getItem('username') || '');

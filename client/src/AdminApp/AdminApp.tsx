@@ -1,8 +1,5 @@
-import { useState } from 'react';
-import './AdminApp.css'
-import { useSocketEvent } from '../socket.io';
-import { TextBox } from '../App/components/TextBox/TextBox';
-import { Timer } from '../App/components/Timer/Timer';
+import { TextBox } from '../components/TextBox/TextBox';
+import { Timer } from '../components/Timer/Timer';
 
 interface Client {
   name: string;
