@@ -50,29 +50,9 @@ export function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const start = () => {
-      setStarted(true);
-    };
-
-    const stop = () => {
-      setStarted(false);
-    };
-
-    const text = (text: string) => {
-      setText(text);
-    }
-
-    socket.on('start', start);
-    socket.on('stop', stop);
-    socket.on('text', text);
-
-    return () => {
-      socket.off('start', start);
-      socket.off('stop', stop);
-      socket.off('text', text);
-    }
-  }, []);
+  useSocketEvent('text', (text: string) => {
+    setText(text);
+  });
 
   if (!username) {
     return (
