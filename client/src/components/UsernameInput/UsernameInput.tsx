@@ -1,5 +1,6 @@
 import { FC, useRef } from "react";
 import S from './UsernameInput.module.scss';
+import { Button } from "../Button/Button";
 
 export const UsernameInput: FC<{
 	onSubmit: (username: string) => void;
@@ -16,8 +17,7 @@ export const UsernameInput: FC<{
 					type="text"
 					placeholder="Username"
 				/>
-				<button
-					className={S.button}
+				<Button
 					onClick={() => {
 						const username = inputRef.current?.value.trim();
 						if (username && username.length > 2) {
@@ -26,7 +26,7 @@ export const UsernameInput: FC<{
 					}}
 				>
 					Continuer
-				</button>
+				</Button>
 			</div>
 		</div>
 	)
