@@ -1,18 +1,24 @@
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
+import { readFile } from 'fs';
 
 const httpServer = createServer();
 const io = new Server(httpServer);
 
 const cacheText = new Map<string, string>();
 
-const gameState = {
+const fileName = 'la-clairiere-des-souris-et-des-hommes-john-steinbeck';
+
+const defaultGameState = {
 	started: false,
 	startTime: 0,
 	audioUrl: '',
 	audioPaused: false,
 	audioTime: 0,
 };
+
+
+let gameState = structuredClone(defaultGameState);
 
 let intervalId: null | NodeJS.Timeout = null;
 const startInterval = () => {
@@ -37,7 +43,7 @@ class Client {
 		this.socket.on("start", () => {
 			if (this.admin) {
 				if (!gameState.started) {
-					gameState.audioUrl = '/la-clairiere-des-souris-et-des-hommes-john-steinbeck.mp3';
+					gameState.audioUrl = `/${fileName}.mp3`;
 					gameState.startTime = Date.now();
 					io.emit("audioUrl", gameState.audioUrl);
 				}
@@ -53,7 +59,24 @@ class Client {
 				gameState.started = false;
 				gameState.audioPaused = true;
 				gameStateSync();
-				console.error('Not implemented');
+
+				if (intervalId !== null)
+					clearInterval(intervalId);
+				readFile(`ressources/${fileName}.txt`, 'utf8', (err, data) => {
+					if (err) {
+						console.error(err);
+						return;
+					}
+					io.emit('correction', data);
+				})
+			}
+		});
+
+		this.socket.on("restart", () => {
+			if (this.admin) {
+				io.emit("audioUrl", '');
+				gameState = structuredClone(defaultGameState);
+				gameStateSync();
 			}
 		});
 

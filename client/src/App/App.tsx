@@ -6,6 +6,7 @@ import { MdBlock } from "react-icons/md";
 import { AudioPlayer } from './AudioPlayer';
 import { TextBox } from '../components/TextBox/TextBox';
 import { Timer } from '../components/Timer/Timer';
+import { GenerateDiff } from '../components/Diff';
 
 export interface GameState {
   started: boolean;
@@ -52,6 +53,12 @@ export function App() {
     setText(text);
   });
 
+  const [diff, setDiff] = useState<string>();
+
+  useSocketEvent('correction', (correction: string) => {
+    setDiff(GenerateDiff(text, correction));
+  });
+
   if (!username) {
     return (
       <UsernameInput
@@ -83,6 +90,7 @@ export function App() {
         <TextBox
           disable={!started}
           text={text}
+          diff={diff}
           onTextChange={(text) => {
             setText(text);
             socket.emit('text', text);

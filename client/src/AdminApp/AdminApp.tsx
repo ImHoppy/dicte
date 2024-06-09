@@ -47,6 +47,7 @@ export function AdminApp() {
         <div className="controls">
           <Button className='button' onClick={handleAudioPause}>{!started || audioPaused ? 'Start' : 'Pause'}</Button>
           <Button className='button' onClick={() => socket.emit('verify')}>Verify</Button>
+          <Button className='button' onClick={() => socket.emit('restart')}>Restart</Button>
         </div>
         <h1 className='time'><Timer paused={!started} defaultTimer={timer} /></h1>
       </div>
