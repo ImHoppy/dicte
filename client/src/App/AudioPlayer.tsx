@@ -1,35 +1,29 @@
-import { useEffect, useRef, useState } from "react"
-import { socket } from "../socket.io";
+import { useRef, useState } from "react"
+import { useSocketEvent } from "../socket.io";
 
 export const AudioPlayer = () => {
 	const audioRef = useRef<HTMLAudioElement>(null);
 	const [audioSource, setAudioSource] = useState('');
-	const [audioPlaying, setAudioPlaying] = useState(false);
 
-	useEffect(() => {
-		socket.on('audio-data', (data) => {
-			const { url, playing } = data;
-			setAudioSource(url);
-			setAudioPlaying(playing);
-		});
+	useSocketEvent('audioUrl', (url: string) => {
+		setAudioSource(url);
+	});
 
-		return () => {
-			socket.off('audio-data');
-		};
-	}, []);
-
-	useEffect(() => {
-		if (audioRef.current && audioSource) {
-			audioRef.current.src = audioSource;
-			if (audioPlaying) {
+	useSocketEvent('audioSync', ({ currentTime, isPlaying }) => {
+		if (audioRef.current) {
+			audioRef.current.currentTime = currentTime;
+			if (isPlaying) {
 				audioRef.current.play();
 			} else {
 				audioRef.current.pause();
 			}
 		}
-	}, [audioSource, audioPlaying]);
+	});
 
 	return (
-		<audio ref={audioRef} />
+		<audio
+			ref={audioRef}
+			src={audioSource}
+		/>
 	);
 };

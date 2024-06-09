@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 import './App.scss'
 import { UsernameInput } from '../components/UsernameInput/UsernameInput';
-import { socket } from '../socket.io';
+import { socket, useSocketEvent } from '../socket.io';
 import { MdBlock } from "react-icons/md";
 import { AudioPlayer } from './AudioPlayer';
 import { TextBox } from '../components/TextBox/TextBox';
 import { Timer } from '../components/Timer/Timer';
+
+export interface GameState {
+  started: boolean;
+  timer: number;
+}
 
 export function App() {
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
@@ -14,10 +19,18 @@ export function App() {
   const [timer, setTimer] = useState(0);
 
   useEffect(() => {
-    socket.emit('username', username, (time: number) => {
-      setTimer(time);
+    socket.emit('joinUser', username, (state: GameState) => {
+
+      setStarted(state.started);
+      setTimer(state.timer);
     });
   }, [username]);
+
+  useSocketEvent('state', (state: GameState) => {
+    setStarted(state.started);
+    setTimer(state.timer);
+  });
+
 
   // Focus handling
   useEffect(() => {

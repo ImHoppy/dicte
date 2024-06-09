@@ -1,0 +1,17 @@
+.clients {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 100px;
+  margin: 50px;
+  height: 100%;
+  overflow-y: auto;
+
+  .client {
+    border-radius: 5px;
+    border: 1px solid var(--background-color);
+    height: 250px;
+    &:not(.focus) {
+      border: 1px solid #f00;
+    }
+  }
+}
