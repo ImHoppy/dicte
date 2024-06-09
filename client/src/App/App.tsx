@@ -9,7 +9,10 @@ import { Timer } from '../components/Timer/Timer';
 
 export interface GameState {
   started: boolean;
-  timer: number;
+  startTime: number;
+  audioUrl: string,
+  audioPaused: boolean,
+  audioTime: number,
 }
 
 export function App() {
@@ -22,15 +25,14 @@ export function App() {
     socket.emit('joinUser', username, (state: GameState) => {
 
       setStarted(state.started);
-      setTimer(state.timer);
+      setTimer(Date.now() - state.startTime);
     });
   }, [username]);
 
   useSocketEvent('state', (state: GameState) => {
     setStarted(state.started);
-    setTimer(state.timer);
+    setTimer(Date.now() - state.startTime);
   });
-
 
   // Focus handling
   useEffect(() => {

@@ -8,11 +8,24 @@ const cacheText = new Map<string, string>();
 
 const gameState = {
 	started: false,
-	timer: 0,
+	startTime: 0,
 	audioUrl: '',
 	audioPaused: false,
 	audioTime: 0,
 };
+
+let intervalId: null | NodeJS.Timeout = null;
+const startInterval = () => {
+	if (intervalId !== null)
+		clearInterval(intervalId);
+	if (gameState.started) {
+		intervalId = setInterval(() => {
+			if (gameState.started && !gameState.audioPaused) {
+				gameState.audioTime++;
+			}
+		}, 1000);
+	}
+}
 
 class Client {
 	public isFocused = true;
@@ -21,17 +34,19 @@ class Client {
 
 	constructor(public socket: Socket, public admin = false) {
 		this.emit("audioUrl", gameState.audioUrl);
-		audioSync();
+		gameStateSync();
 
 		this.socket.on("start", () => {
 			if (this.admin) {
 				if (!gameState.started) {
 					gameState.audioUrl = '/la-clairiere-des-souris-et-des-hommes-john-steinbeck.mp3';
+					gameState.startTime = Date.now();
 					io.emit("audioUrl", gameState.audioUrl);
 				}
 				gameState.started = true;
 				gameState.audioPaused = false;
-				audioSync();
+				gameStateSync();
+				startInterval();
 			}
 		});
 
@@ -39,14 +54,17 @@ class Client {
 			if (this.admin) {
 				gameState.started = false;
 				gameState.audioPaused = true;
-				audioSync();
+				gameStateSync();
+				console.error('Not implemented');
 			}
 		});
 
 		this.socket.on("pause", () => {
 			if (this.admin) {
 				gameState.audioPaused = true;
-				audioSync();
+				gameStateSync();
+				if (intervalId !== null)
+					clearInterval(intervalId);
 			}
 		});
 
@@ -96,8 +114,8 @@ const getClients = () => Array.from(clients.values()).filter(c => !c.admin).map(
 	};
 })
 
-const audioSync = () => {
-	io.emit("audioSync", { currentTime: gameState.audioTime, isPlaying: !gameState.audioPaused });
+const gameStateSync = () => {
+	io.emit('state', gameState);
 }
 
 io.on("connection", (socket) => {

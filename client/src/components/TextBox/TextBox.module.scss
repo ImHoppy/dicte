@@ -5,6 +5,7 @@
 	outline: 0;
 	background-color: var(--background-color-90);
 	padding: 20px;
+	word-break: break-all;
 
 	&:disabled {
 		background-color: red;

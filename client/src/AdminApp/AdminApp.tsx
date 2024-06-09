@@ -16,16 +16,17 @@ interface Client {
 }
 
 export function AdminApp() {
-
   const [started, setStarted] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [audioPaused, setAudioPaused] = useState(true);
 
   const [clients, setClients] = useState<Record<string, Client>>({});
 
   useEffect(() => {
     socket.emit('joinAdmin', null, (state: GameState) => {
       setStarted(state.started);
-      setTimer(state.timer);
+      setTimer(Date.now() - state.startTime);
+      setAudioPaused(state.audioPaused);
     });
   }, []);
 
@@ -35,14 +36,19 @@ export function AdminApp() {
 
   useSocketEvent('state', (state: GameState) => {
     setStarted(state.started);
-    setTimer(state.timer);
+    setTimer(Date.now() - state.startTime);
+    setAudioPaused(state.audioPaused);
   });
+
+  const handleAudioPause = () => {
+    socket.emit(!started || audioPaused ? 'start' : 'pause')
+  }
 
   return (
     <div className="admin-app">
       <div className="header">
         <div className="controls">
-          <Button className='button' onClick={() => socket.emit(started ? 'pause' : 'start')}>{started ? 'Pause' : 'Start'}</Button>
+          <Button className='button' onClick={handleAudioPause}>{!started || audioPaused ? 'Start' : 'Pause'}</Button>
           <Button className='button' onClick={() => socket.emit('verify')}>Verify</Button>
         </div>
         <h1 className='time'><Timer paused={!started} defaultTimer={timer} /></h1>

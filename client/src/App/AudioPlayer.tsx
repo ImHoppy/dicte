@@ -1,22 +1,24 @@
-import { useRef, useState } from "react"
+import { forwardRef, useState } from "react";
 import { useSocketEvent } from "../socket.io";
+import { GameState } from "./App";
 
-export const AudioPlayer = () => {
-	const audioRef = useRef<HTMLAudioElement>(null);
+export const AudioPlayer = forwardRef<HTMLAudioElement>((_, audioRef) => {
 	const [audioSource, setAudioSource] = useState('');
 
 	useSocketEvent('audioUrl', (url: string) => {
 		setAudioSource(url);
 	});
 
-	useSocketEvent('audioSync', ({ currentTime, isPlaying }) => {
-		if (audioRef.current) {
-			audioRef.current.currentTime = currentTime;
-			if (isPlaying) {
-				audioRef.current.play();
-			} else {
-				audioRef.current.pause();
-			}
+	useSocketEvent('state', ({ audioPaused, audioTime }: GameState) => {
+		if (!audioRef) return;
+		const ref = (audioRef as React.RefObject<HTMLAudioElement>);
+		if (!ref.current) return;
+
+		ref.current.currentTime = audioTime;
+		if (audioPaused) {
+			ref.current.pause();
+		} else {
+			ref.current.play();
 		}
 	});
 
@@ -26,4 +28,4 @@ export const AudioPlayer = () => {
 			src={audioSource}
 		/>
 	);
-};
+});
