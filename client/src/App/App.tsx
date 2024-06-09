@@ -16,22 +16,20 @@ export interface GameState {
 }
 
 export function App() {
-  const [username, setUsername] = useState(localStorage.getItem('username') || '');
+  const [username, setUsername] = useState('');
   const [text, setText] = useState('');
   const [started, setStarted] = useState(false);
   const [timer, setTimer] = useState(0);
 
   useEffect(() => {
-    socket.emit('joinUser', username, (state: GameState) => {
-
-      setStarted(state.started);
-      setTimer(Date.now() - state.startTime);
-    });
+    if (!username) return;
+    socket.emit('joinUser', username);
   }, [username]);
 
   useSocketEvent('state', (state: GameState) => {
     setStarted(state.started);
-    setTimer(Date.now() - state.startTime);
+    if (state.startTime > 0)
+      setTimer(Date.now() - state.startTime);
   });
 
   // Focus handling

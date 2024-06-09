@@ -6,7 +6,11 @@ interface TimerProps {
 }
 
 export const Timer: FC<TimerProps> = ({ defaultTimer = 0, paused = false }) => {
-	const [timer, setTimer] = useState(defaultTimer);
+	const [timer, setTimer] = useState(defaultTimer / 1000);
+
+	useEffect(() => {
+		setTimer(defaultTimer / 1000);
+	}, [defaultTimer]);
 
 	useEffect(() => {
 		if (!paused) {
@@ -15,7 +19,7 @@ export const Timer: FC<TimerProps> = ({ defaultTimer = 0, paused = false }) => {
 			}, 1000);
 			return () => clearInterval(interval);
 		}
-	}, [paused]);
+	}, [paused, defaultTimer]);
 
 	return (
 		new Date(timer * 1000).toISOString().slice(11, 11 + 8)

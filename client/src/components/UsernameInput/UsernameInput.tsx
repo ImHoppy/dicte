@@ -12,6 +12,7 @@ export const UsernameInput: FC<{
 		<div className={S.container}>
 			<div className={S.main}>
 				<input
+					defaultValue={localStorage.getItem('username') || ''}
 					className={S.input}
 					ref={inputRef}
 					type="text"

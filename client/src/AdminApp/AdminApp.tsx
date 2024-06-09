@@ -23,11 +23,7 @@ export function AdminApp() {
   const [clients, setClients] = useState<Record<string, Client>>({});
 
   useEffect(() => {
-    socket.emit('joinAdmin', null, (state: GameState) => {
-      setStarted(state.started);
-      setTimer(Date.now() - state.startTime);
-      setAudioPaused(state.audioPaused);
-    });
+    socket.emit('joinAdmin');
   }, []);
 
   useSocketEvent('clients', (clients: Record<string, Client>) => {
@@ -36,7 +32,8 @@ export function AdminApp() {
 
   useSocketEvent('state', (state: GameState) => {
     setStarted(state.started);
-    setTimer(Date.now() - state.startTime);
+    if (state.startTime > 0)
+      setTimer(Date.now() - state.startTime);
     setAudioPaused(state.audioPaused);
   });
 

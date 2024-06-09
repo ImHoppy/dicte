@@ -33,8 +33,6 @@ class Client {
 	public username: string = '';
 
 	constructor(public socket: Socket, public admin = false) {
-		this.emit("audioUrl", gameState.audioUrl);
-		gameStateSync();
 
 		this.socket.on("start", () => {
 			if (this.admin) {
@@ -68,17 +66,21 @@ class Client {
 			}
 		});
 
-		this.socket.on("joinAdmin", (_, cb) => {
+		this.socket.on("joinAdmin", () => {
 			this.admin = true;
 			this.socket.join("admin");
 			this.emit("clients", getClients());
-			cb(gameState);
+
+			this.emit("audioUrl", gameState.audioUrl);
+			gameStateSync();
 		});
 
-		this.socket.on("joinUser", (username, cb) => {
+		this.socket.on("joinUser", (username) => {
 			this.username = username;
 			io.to("admin").emit("clients", getClients());
-			cb(gameState);
+
+			this.emit("audioUrl", gameState.audioUrl);
+			gameStateSync();
 		});
 
 		this.socket.on("focus", () => {
